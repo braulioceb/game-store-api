@@ -92,7 +92,10 @@ Devuelve una página HTML con la información de la tienda.
 game-store/
 │
 ├── app.py
-└── README.md
+├── README.md
+├── .gitignore
+└── requirements.yml
+
 ```
 
 ## Tecnologías
