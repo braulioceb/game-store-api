@@ -21,7 +21,7 @@ El proyecto implementa un servidor web utilizando Flask. Al acceder al endpoint 
 2. Opcionalmente, crea un entorno virtual:
 
 ```bash
-python -m venv venv/game-store-api
+python -m venv .venv/game-store-api
 ```
 
 3. Activa el entorno virtual.
@@ -29,19 +29,25 @@ python -m venv venv/game-store-api
 En Linux/macOS:
 
 ```bash
-source venv/bin/activate
+source .venv/game-store-api/bin/activate
 ```
 
 En Windows:
 
 ```bash
-venv\Scripts\activate
+.venv\game-store-api\Scripts\activate
+```
+
+En gitbash:
+
+```bash
+source .venv/game-store-api/Scripts/activate
 ```
 
 4. Instala Flask:
 
 ```bash
-pip install -r requirements
+pip install -r requirements.yml
 ```
 
 ## Ejecución
@@ -119,4 +125,3 @@ app.run(debug=True)
 ## Licencia
 
 Este proyecto es un ejemplo educativo y puede utilizarse y modificarse libremente con fines de aprendizaje.
-
