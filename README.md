@@ -1,13 +1,10 @@
 # Game Store
 
-Una aplicación web sencilla desarrollada con **Flask** que expone un endpoint HTTP y devuelve una página HTML con información básica de una tienda de videojuegos.
+Una aplicación web sencilla desarrollada con **Flask** que expone endpoints con información básica de una tienda de videojuegos.
 
 ## Descripción
 
-El proyecto implementa un servidor web utilizando Flask. Al acceder al endpoint principal `/`, la aplicación devuelve una página HTML que contiene:
-
-* **Título:** Game Store
-* **Descripción:** Video Game Store and entertainment articles
+El proyecto implementa un servidor web utilizando Flask.
 
 ## Requisitos
 
@@ -17,6 +14,9 @@ El proyecto implementa un servidor web utilizando Flask. Al acceder al endpoint 
 ## Instalación
 
 1. Clona o descarga el proyecto.
+```bash
+git clone https://github.com/braulioceb/game-store-api.git
+```
 
 2. Opcionalmente, crea un entorno virtual:
 
@@ -58,6 +58,8 @@ Ejecuta la aplicación con:
 python app.py
 ```
 
+## Detalles Ejecución
+
 Por defecto, Flask iniciará el servidor en:
 
 ```text
@@ -70,26 +72,10 @@ También puedes acceder desde:
 http://localhost:5000/
 ```
 
-## Endpoint
+Por defecto, el modo debug está habilitado 
 
-### `GET /`
-
-Devuelve una página HTML con la información de la tienda.
-
-**Ejemplo de respuesta:**
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Game Store</title>
-</head>
-<body>
-    <h1>Game Store</h1>
-    <p>Video Game Store and entertainment articles</p>
-</body>
-</html>
+```text
+debug = True
 ```
 
 ## Estructura del proyecto
@@ -97,11 +83,11 @@ Devuelve una página HTML con la información de la tienda.
 ```text
 game-store/
 │
-├── app.py
-├── README.md
-├── .gitignore
-└── requirements.yml
-
+├── .gitignore           # archivos ignorados por git
+├── app.py               # codigo de la app
+├── info.md              # información de la app
+├── README.md            # documentación de la info 
+└── requirements.yml     # ambiente de ejecución
 ```
 
 ## Tecnologías
@@ -110,14 +96,27 @@ game-store/
 * **Flask**
 * **HTML**
 
+
+## Endpoints
+
+Listado de endpoints de la aplicación:
+
+GET - "/" - Devuelve la página principal del proyecto.
+
+GET - "/reports" - Devuelve la página general de reportes de Game Store.
+
+GET - "/reports/sales" - Devuelve la página de reportes de ventas.
+
+GET - "/reports/sales/<fecha>" - Devuelve el reporte de ventas correspondiente a la fecha indicada mediante el parámetro de ruta <fecha>.
+
 ## Desarrollo
 
-La aplicación utiliza Flask para crear el servidor web y definir las rutas mediante decoradores. El endpoint `/` responde directamente con contenido HTML.
+La aplicación utiliza Flask para crear el servidor web y definir las rutas mediante decoradores. 
 
-Para desarrollo, el servidor puede ejecutarse en modo debug modificando `app.py`:
+Puede consultarse el nombre y el mapeo de endpoints de la app ejecutando el siguiente comando:
 
-```python
-app.run(debug=True)
+```bash
+git info.py
 ```
 
 > **Nota:** El modo `debug` debe utilizarse únicamente durante el desarrollo y no en un entorno de producción.
