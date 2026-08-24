@@ -113,7 +113,7 @@ GET - "/reports/sales/<fecha>" - Devuelve el reporte de ventas correspondiente a
 
 La aplicación utiliza Flask para crear el servidor web y definir las rutas mediante decoradores. 
 
-Puede consultarse el nombre y el mapeo de endpoints ejecutando el siguiente comando:
+Puede consultarse el nombre y el mapeo de endpoints de la app ejecutando el siguiente comando:
 
 ```bash
 git info.py
