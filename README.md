@@ -139,7 +139,7 @@ La aplicación utiliza Flask para crear el servidor web y definir las rutas medi
 Puede consultarse el nombre y el mapeo de endpoints de la app ejecutando el siguiente comando:
 
 ```bash
-git info.py
+python info.py
 ```
 
 > **Nota:** El modo `debug` debe utilizarse únicamente durante el desarrollo y no en un entorno de producción.
