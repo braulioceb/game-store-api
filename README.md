@@ -50,6 +50,21 @@ source .venv/game-store-api/Scripts/activate
 pip install -r requirements.yml
 ```
 
+4. Configuración de las variables de ambiente:
+
+cambiar el nombre del archivo .env-example a .env y colocar las variables de ambiente correspondiente a la base de datos, como se muestra en el siguiente ejemplo:
+
+
+```
+DRIVER="MySQL ODBC 8.2 Unicode Driver"
+SERVER=127.0.0.1
+DATABASE=game-store
+USER=root
+PORT=3306
+PWD=contraseña
+```
+
+
 ## Ejecución
 
 Ejecuta la aplicación con:
@@ -82,12 +97,15 @@ debug = True
 
 ```text
 game-store/
-│
-├── .gitignore           # archivos ignorados por git
-├── app.py               # codigo de la app
-├── info.md              # información de la app
-├── README.md            # documentación de la info 
-└── requirements.yml     # ambiente de ejecución
+├── db                    # codigos de la base de datos
+    ├── conn.py           # codigos para administrar la conexion a la base de datos
+    └── utils.py          # db utils
+├── .env-example          # archivo ejemplo para configuracion del ambiente
+├── .gitignore            # archivos ignorados por git
+├── app.py                # codigo de la app
+├── info.md               # información de la app
+├── README.md             # documentación de la info
+└── requirements.yml      # ambiente de ejecución
 ```
 
 ## Tecnologías
@@ -95,7 +113,8 @@ game-store/
 * **Python**
 * **Flask**
 * **HTML**
-
+* **ODBC**
+* **Pandas**
 
 ## Endpoints
 
@@ -107,7 +126,11 @@ GET - "/reports" - Devuelve la página general de reportes de Game Store.
 
 GET - "/reports/sales" - Devuelve la página de reportes de ventas.
 
-GET - "/reports/sales/<fecha>" - Devuelve el reporte de ventas correspondiente a la fecha indicada mediante el parámetro de ruta <fecha>.
+GET - "/reports/sales/<fecha>" - Devuelve la página html del reporte de ventas correspondiente a la fecha indicada mediante el parámetro de ruta <fecha>.
+
+GET - "/reports/sales/hist" - Devuelve la página html del reporte de ventas historico. 
+
+GET - "api/reports/sales/hist" - Devuelve la informacion del reporte de ventas historico.
 
 ## Desarrollo
 
