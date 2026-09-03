@@ -130,7 +130,7 @@ GET - "/reports/sales/<fecha>" - Devuelve la página html del reporte de ventas 
 
 GET - "/reports/sales/hist" - Devuelve la página html del reporte de ventas historico. 
 
-GET - "api/reports/sales/hist" - Devuelve la informacion del reporte de ventas historico.
+GET - "/api/reports/sales/hist" - Devuelve la informacion del reporte de ventas historico.
 
 ## Desarrollo
 

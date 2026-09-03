@@ -109,7 +109,7 @@ def sales_hist_page():
     </html>
     """
 
-@app.route("/api/sales/reports/hist", methods=["GET"])
+@app.route("/api/reports/sales/hist", methods=["GET"])
 def sales_rp_hist():
     conn = open_connection()
 
