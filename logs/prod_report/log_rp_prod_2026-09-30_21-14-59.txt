@@ -1,0 +1,3 @@
+[2026-09-30_21-14-59] El usuario inserto 50 MB de informacion y 10 registros nuevos.
+--------------------
+Exception: El proceso ventas bajo regulacion 3

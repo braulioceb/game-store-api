@@ -1,0 +1,3 @@
+[2026-09-23_18-16-41] Error en la validación de los datos de product_report.
+--------------------
+Exception: 'ValueError' object has no attribute 'columns'

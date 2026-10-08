@@ -1,0 +1,3 @@
+[2026-09-23_18-06-44] Error al truncar la tabla prod_product_report.
+--------------------
+Exception: name 'truncate_prod_table' is not defined

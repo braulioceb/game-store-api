@@ -15,7 +15,7 @@ def get_df(conn, query):
     except Exception as e:
         return ValueError(f"Somithing went wrong: '{e}'")
 
-def excute_query(conn, query):
+def execute_query(conn, query):
     try:
         cursor = conn.cursor()
         cursor.execute(query)

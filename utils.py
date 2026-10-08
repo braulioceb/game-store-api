@@ -8,7 +8,7 @@ def write_log(message, exception=None):
         
     LOG_DIR = "logs/prod_report"
     
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     
     LOG_FILE = os.path.join(
     LOG_DIR,

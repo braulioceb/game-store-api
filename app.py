@@ -3,7 +3,7 @@ from db.conn import open_connection
 from db.utils import get_df, execute_query
 import pandas as pd
 from utils import write_log
-
+from flask import request
 
 app = Flask(__name__)
 
@@ -132,8 +132,13 @@ import logging
 from datetime import datetime
 
 
+#localhost ~ 127.0.0.1
+
+#-- maquina -- www.cinemex.com ~ 196.0.101.100: 8000  
+
+
 @app.route("/api/reports/product/hist", methods=["GET"])
-def sales_rp_hist():
+def product_rp_hist():
     conn = None
 
     try:
@@ -155,11 +160,11 @@ def sales_rp_hist():
 
     create_prv_table = """
         CREATE TABLE IF NOT EXISTS prv_product_report (
-            DATE DATE,
+            date DATE,
             prod_name VARCHAR(100),
-            TOT_PROD_SL BIGINT,
-            TOT_CLIE_SL DECIMAL(10,2),
-            MONEY DECIMAL(32,2)
+            tot_prod_sl BIGINT,
+            tot_clie_sl DECIMAL(10,2),
+            money DECIMAL(32,2)
         );
     """
 
@@ -185,7 +190,7 @@ def sales_rp_hist():
     # ============================================================
 
     truncate_prv_table = """
-        TRUNCATE TABLE prv_product_report 
+        TRUNCATE
     """
 
     try:
@@ -235,7 +240,7 @@ def sales_rp_hist():
             FROM game_store.products
         )
         SELECT 
-            a.DATE,
+            a.date,
             b.prod_name,
             a.TOT_PROD_SL,
             a.TOT_CLIE_SL,
@@ -270,7 +275,7 @@ def sales_rp_hist():
 
     query_prv_data = """
         SELECT *
-        FROM prv_product_report;
+        FROM prv_product_rp;
     """
 
     try:
@@ -387,11 +392,11 @@ def sales_rp_hist():
 
     create_prod_table = """
         CREATE TABLE IF NOT EXISTS product_report (
-            DATE DATE,
+            date DATE,
             prod_name VARCHAR(100),
-            TOT_PROD_SL BIGINT,
-            TOT_CLIE_SL DECIMAL(10,2),
-            MONEY DECIMAL(32,2)
+            tot_prod_sl BIGINT,
+            tot_clie_sl DECIMAL(10,2),
+            money DECIMAL(32,2)
         );
     """
 
@@ -414,44 +419,40 @@ def sales_rp_hist():
 
 
     # ============================================================
+    # 8. TRUNCATE TABLA PRODUCT_REPORT
+    # ============================================================
+
+    truncate_prod_table = """
+        TRUNCATE TABLE product_report 
+    """
+
+    try:
+        execute_query(conn, truncate_prod_table)
+
+    except Exception as e:
+        write_log(
+            "Error al truncar la tabla product_report.",
+            e
+        )
+
+        if conn:
+            conn.close()
+
+        return jsonify({
+            "status": "error",
+            "message": "No fue posible truncar la tabla productiva del reporte."
+        }), 500
+
+
+
+    # ============================================================
     # 7. INSERTAR DATOS EN PRODUCT_REPORT
     # ============================================================
 
     insert_prod_table = """
         INSERT INTO product_report
-        (
-            DATE,
-            prod_name,
-            TOT_PROD_SL,
-            TOT_CLIE_SL,
-            MONEY
-        )
-        WITH SALES AS (
-            SELECT 
-                LAST_DAY(PURCHASE_DATE) AS DATE,
-                PROD_ID,
-                COUNT(*) AS TOT_PROD_SL,
-                COUNT(DISTINCT id_client) AS TOT_CLIE_SL,
-                SUM(import) AS MONEY
-            FROM game_store.sales
-            GROUP BY LAST_DAY(PURCHASE_DATE), PROD_ID
-        ),
-        ARTICLES AS (
-            SELECT
-                prod_id,
-                prod_name
-            FROM game_store.products
-        )
-        SELECT 
-            a.DATE,
-            b.prod_name,
-            a.TOT_PROD_SL,
-            a.TOT_CLIE_SL,
-            a.MONEY
-        FROM SALES a
-        LEFT JOIN ARTICLES b
-            ON a.prod_id = b.prod_id
-        ORDER BY a.DATE, b.prod_name;
+        SELECT *
+        FROM game_store.prv_product_report;
     """
 
     try:
@@ -470,32 +471,6 @@ def sales_rp_hist():
             "status": "error",
             "message": "No fue posible generar los datos finales del reporte."
         }), 500
-
-    # ============================================================
-    # 2. TRUNCATE TABLA PRODUCT_REPORT
-    # ============================================================
-
-    truncate_prv_table = """
-        TRUNCATE TABLE product_report 
-    """
-
-    try:
-        execute_query(conn, truncate_prod_table)
-
-    except Exception as e:
-        write_log(
-            "Error al truncar la tabla prod_product_report.",
-            e
-        )
-
-        if conn:
-            conn.close()
-
-        return jsonify({
-            "status": "error",
-            "message": "No fue posible truncar la tabla productiva del reporte."
-        }), 500
-
 
 
     # ============================================================
@@ -526,7 +501,7 @@ def sales_rp_hist():
 
 
     # ============================================================
-    # 8. VALIDAR DATOS DE PRODUCT_REPORT
+    # 10. VALIDAR DATOS DE PRODUCT_REPORT
     # ============================================================
 
     try:
@@ -616,7 +591,7 @@ def sales_rp_hist():
 
 
     # ============================================================
-    # 9. CERRAR CONEXIÓN
+    # 10. CERRAR CONEXIÓN
     # ============================================================
 
     try:
@@ -630,15 +605,337 @@ def sales_rp_hist():
 
 
     # ============================================================
-    # 10. RESPONSE DE LA API
+    # 11. RESPONSE DE LA API
     # ============================================================
 
     return jsonify({
         "status": "success",
         "message": "Reporte histórico de productos generado correctamente.",
-        "data": prod_data.to_dict(orient="records")
+        #"data": prod_data.to_dict(orient="records")
     }), 200
 
+# url - endpoint - detalle api + uri
+#https://www.vivaaerobus.com/es-mx/profile/
+# detalle api ---------------/uri-----------
+# endpoint 
+
+@app.route(
+    "/api/sales", # uri (unique resource identifier)
+    methods=["POST"]
+    )
+def create_sale():
+
+    conn = None
+
+    try:
+        data = request.get_json()
+
+        required_fields = [
+            "purchase_id",
+            "id_client",
+            "prod_id",
+            "purchase_date",
+            "prod_num",
+            "import"
+        ]
+
+        # codigo de python que valida que purchase_id sea un numero
+        # id_client python valida que el cliente exista
+
+        for field in required_fields:
+            if field not in data:
+                return jsonify({
+                    "status": "error",
+                    "message": f"El campo '{field}' es obligatorio."
+                }), 400
+
+        conn = open_connection()
+
+        cursor = conn.cursor()
+
+        query = """
+            INSERT INTO sales (
+                purchase_id,
+                id_client,
+                prod_id,
+                purchase_date,
+                prod_num,
+                import
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+        """
+
+        cursor.execute(query, (
+            data["purchase_id"],
+            data["id_client"],
+            data["prod_id"],
+            data["purchase_date"],
+            data["prod_num"],
+            data["import"]
+        ))
+
+        conn.commit()
+
+        #purchase_id = cursor.lastrowid
+
+        write_log(
+            "El usuario inserto 50 MB de informacion y 10 registros nuevos.",
+            "El proceso ventas bajo regulacion 3"
+        )
+
+        cursor.close()
+
+        return jsonify({
+            "status": "success",
+            "message": "Venta creada correctamente.",
+        }), 201
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+
+        write_log(
+            "Error al crear la venta.",
+            e
+        )
+
+        return jsonify({
+            "status": "error",
+            "error": f"{e}",
+            "message": "No fue posible crear la venta."
+        }), 500
+
+    finally:
+        if conn:
+            conn.close()
+
+@app.route(
+    "/api/sales/<int:purchase_id>",
+    methods=["PUT"]
+)
+def update_sale(purchase_id):
+
+    conn = None
+
+    try:
+        data = request.get_json()
+
+        required_fields = [
+            "id_client",
+            "prod_id",
+            "purchase_date",
+            "prod_num",
+            "import"
+        ]
+
+        for field in required_fields:
+            if field not in data:
+                return jsonify({
+                    "status": "error",
+                    "message": f"El campo '{field}' es obligatorio."
+                }), 400
+
+        conn = open_connection()
+
+        cursor = conn.cursor()
+
+        query = """
+            UPDATE sales
+            SET
+                id_client = ?,
+                prod_id = ?,
+                purchase_date = ?,
+                prod_num = ?,
+                import = ?
+            WHERE purchase_id = ?
+        """
+
+        cursor.execute(query, (
+            data["id_client"],
+            data["prod_id"],
+            data["purchase_date"],
+            data["prod_num"],
+            data["import"],
+            purchase_id
+        ))
+
+        if cursor.rowcount == 0:
+            conn.rollback()
+
+            return jsonify({
+                "status": "error",
+                "message": "No se encontró la venta."
+            }), 404
+
+        conn.commit()
+
+        write_log(
+            f"Se actualizó la venta con purchase_id {purchase_id}.",
+            "El proceso ventas bajo regulacion 3"
+        )
+
+        cursor.close()
+
+        return jsonify({
+            "status": "success",
+            "message": "Venta actualizada correctamente."
+        }), 200
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+
+        write_log(
+            "Error al actualizar la venta.",
+            e
+        )
+
+        return jsonify({
+            "status": "error",
+            "error": f"{e}",
+            "message": "No fue posible actualizar la venta."
+        }), 500
+
+    finally:
+        if conn:
+            conn.close()
+
+
+@app.route(
+    "/api/sales/<int:purchase_id>",
+    methods=["DELETE"]
+)
+def delete_sale(purchase_id):
+
+    conn = None
+
+    try:
+        conn = open_connection()
+
+        cursor = conn.cursor()
+
+        query = """
+            DELETE FROM sales
+            WHERE purchase_id = ?
+        """
+
+        cursor.execute(query, (purchase_id,))
+
+        if cursor.rowcount == 0:
+            conn.rollback()
+
+            return jsonify({
+                "status": "error",
+                "message": "No se encontró la venta."
+            }), 404
+
+        conn.commit()
+
+        write_log(
+            f"Se eliminó la venta con purchase_id {purchase_id}.",
+            "El proceso ventas bajo regulacion 3"
+        )
+
+        cursor.close()
+
+        return jsonify({
+            "status": "success",
+            "message": "Venta eliminada correctamente."
+        }), 200
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+
+        write_log(
+            "Error al eliminar la venta.",
+            e
+        )
+
+        return jsonify({
+            "status": "error",
+            "error": f"{e}",
+            "message": "No fue posible eliminar la venta."
+        }), 500
+
+    finally:
+        if conn:
+            conn.close()
+
+@app.route(
+    "/api/sales/<int:purchase_id>",
+    methods=["GET"]
+)
+def get_sale(purchase_id):
+
+    conn = None
+
+    try:
+        conn = open_connection()
+
+        cursor = conn.cursor()
+
+        query = """
+            SELECT
+                purchase_id,
+                id_client,
+                prod_id,
+                purchase_date,
+                prod_num,
+                import
+            FROM sales
+            WHERE purchase_id = ?
+        """
+
+        cursor.execute(query, (purchase_id,))
+
+        sale = cursor.fetchone()
+
+        if sale is None:
+            cursor.close()
+
+            return jsonify({
+                "status": "error",
+                "message": "No se encontró la venta."
+            }), 404
+
+        sale_data = {
+            "purchase_id": sale[0],
+            "id_client": sale[1],
+            "prod_id": sale[2],
+            "purchase_date": sale[3],
+            "prod_num": sale[4],
+            "import": sale[5]
+        }
+
+        cursor.close()
+
+        return jsonify({
+            "status": "success",
+            "message": "Venta encontrada correctamente.",
+            "data": sale_data
+        }), 200
+
+    except Exception as e:
+
+        if conn:
+            conn.rollback()
+
+        write_log(
+            "Error al consultar la venta.",
+            e
+        )
+
+        return jsonify({
+            "status": "error",
+            "error": f"{e}",
+            "message": "No fue posible consultar la venta."
+        }), 500
+
+    finally:
+
+        if conn:
+            conn.close()
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, debug=True)

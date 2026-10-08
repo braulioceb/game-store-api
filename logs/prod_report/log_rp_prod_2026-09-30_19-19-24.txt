@@ -1,0 +1,3 @@
+[2026-09-30_19-19-24] Error al crear la venta.
+--------------------
+Exception: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
