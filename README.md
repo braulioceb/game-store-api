@@ -100,12 +100,15 @@ game-store/
 ├── db                    # codigos de la base de datos
     ├── conn.py           # codigos para administrar la conexion a la base de datos
     └── utils.py          # db utils
+├── logs                  # carpeta de logs
 ├── .env-example          # archivo ejemplo para configuracion del ambiente
 ├── .gitignore            # archivos ignorados por git
 ├── app.py                # codigo de la app
-├── info.md               # información de la app
+├── info.py               # información de la app
 ├── README.md             # documentación de la info
-└── requirements.yml      # ambiente de ejecución
+├── requirements.yml      # ambiente de ejecución
+└── utils.py              # utils de la app
+
 ```
 
 ## Tecnologías
@@ -131,6 +134,12 @@ GET - "/reports/sales/<fecha>" - Devuelve la página html del reporte de ventas 
 GET - "/reports/sales/hist" - Devuelve la página html del reporte de ventas historico. 
 
 GET - "/api/reports/sales/hist" - Devuelve la informacion del reporte de ventas historico.
+
+POST - "/api/sales/" - Postea un cliente siguiente las reglas de la base de datos.
+
+PUT - "/api/sales/<int:purchase_id>" - Actualiza la informacion de una compra.
+
+DELETE - "/api/sales/<int:purchase_id>" - Borra el registro de la compra con el id.
 
 ## Desarrollo
 
