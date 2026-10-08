@@ -1,3 +1,0 @@
-[2026-09-30_19-35-55] Error al crear la venta.
---------------------
-Exception: 'pyodbc.Cursor' object has no attribute 'lastrowid'

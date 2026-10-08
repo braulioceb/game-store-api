@@ -1,3 +1,0 @@
-[2026-09-23_21-27-08] Error en la validación de los datos de prv_product_report.
---------------------
-Exception: 'ValueError' object has no attribute 'columns'

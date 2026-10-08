@@ -1,3 +1,0 @@
-[2026-09-30_21-34-29] Error al crear la venta.
---------------------
-Exception: ('HY000', '[HY000] [MySQL][ODBC 8.2(w) Driver][mysqld-8.0.41]Cannot add or update a child row: a foreign key constraint fails (`game_store`.`sales`, CONSTRAINT `sales_ibfk_2` FOREIGN KEY (`prod_id`) REFERENCES `products` (`prod_id`)) (1452) (SQLExecDirectW)')

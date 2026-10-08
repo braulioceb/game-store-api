@@ -1,3 +1,0 @@
-[2026-10-07_18-02-16] Se actualizó la venta con purchase_id 10000.
---------------------
-Exception: El proceso ventas bajo regulacion 3

@@ -1,3 +1,0 @@
-[2026-09-30_19-06-16] Error al crear la venta.
---------------------
-Exception: name 'request' is not defined
